@@ -1,0 +1,23 @@
+export struct InstalledPackage {
+    name: string,
+    version: string,
+    description: string,
+}
+
+export global AppLogic {
+    // State
+    in property <string> selected_file;
+    in property <string> pkg_name;
+    in property <string> pkg_version;
+    in property <string> pkg_description;
+    in property <[string]> archive_files;
+    in property <bool> is_processing;
+    in property <string> terminal_output;
+    in property <[InstalledPackage]> installed_packages;
+    
+    // Callbacks
+    callback open_file_dialog();
+    callback install_package(string);
+    callback remove_package(string);
+    callback load_installed_packages();
+}

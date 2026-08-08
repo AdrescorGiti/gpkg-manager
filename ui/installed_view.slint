@@ -1,0 +1,95 @@
+import { ListView } from "std-widgets.slint";
+import { AppLogic, InstalledPackage } from "logic.slint";
+import { Badge } from "components/badge.slint";
+
+export component InstalledView inherits VerticalLayout {
+    spacing: 16px;
+    padding: 16px;
+
+    Text {
+        text: "Установленные пакеты";
+        font-size: 18px;
+        font-weight: 700;
+        color: #0f172a;
+    }
+
+    ListView {
+        for pkg in AppLogic.installed_packages : VerticalLayout {
+            padding-bottom: 8px; // Отступ снизу для каждой карточки пакета
+
+            Rectangle {
+                height: 80px;
+                background: #f8fafc;
+                border-radius: 8px;
+                border-width: 1px;
+                border-color: #e2e8f0;
+                
+                HorizontalLayout {
+                    padding: 12px;
+                    spacing: 16px;
+                    alignment: space-between;
+
+                    // Информация о пакете
+                    VerticalLayout {
+                        spacing: 4px;
+                        alignment: center;
+                        
+                        HorizontalLayout {
+                            spacing: 8px;
+                            Text { 
+                                text: pkg.name; 
+                                font-size: 16px; 
+                                font-weight: 600; 
+                                color: #1e293b;
+                            }
+                            Badge {
+                                text: "v" + pkg.version;
+                                bg-color: #dcfce7;
+                                text-color: #166534;
+                            }
+                        }
+                        Text {
+                            text: pkg.description;
+                            font-size: 13px;
+                            color: #64748b;
+                        }
+                    }
+
+                    // Кнопка удаления
+                    VerticalLayout {
+                        alignment: center;
+                        
+                        Rectangle {
+                            width: 100px;
+                            height: 36px;
+                            border-radius: 6px;
+                            background: touch.pressed ? #7f1d1d : (touch.has-hover ? #b91c1c : #ef4444);
+                            
+                            Text {
+                                text: "Удалить";
+                                color: white;
+                                font-weight: 600;
+                                horizontal-alignment: center;
+                                vertical-alignment: center;
+                            }
+                            
+                            touch := TouchArea {
+                                clicked => { AppLogic.remove_package(pkg.name); }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    // Пустое состояние
+    if AppLogic.installed_packages.length == 0 : VerticalLayout {
+        alignment: center;
+        Text {
+            text: "Нет установленных пакетов или идет сканирование...";
+            horizontal-alignment: center;
+            color: #94a3b8;
+        }
+    }
+}

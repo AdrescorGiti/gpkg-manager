@@ -1,0 +1,76 @@
+import { AppLogic } from "logic.slint";
+import { InstallView } from "install_view.slint";
+import { InstalledView } from "installed_view.slint";
+
+export { AppLogic }
+
+export component AppWindow inherits Window {
+    title: "gpkg manager";
+    icon: @image-url("assets/logo.png");
+    
+    preferred-width: 650px;
+    preferred-height: 550px;
+    min-width: 500px;
+    min-height: 450px;
+    
+    background: white;
+
+    property <int> active_tab: 0;
+
+    VerticalLayout {
+        Rectangle {
+            height: 48px;
+            background: #f8fafc;
+            
+            Rectangle {
+                y: parent.height - 1px;
+                height: 1px;
+                background: #e2e8f0;
+            }
+            
+            HorizontalLayout {
+                spacing: 0px;
+                
+                Rectangle {
+                    width: 160px;
+                    background: active_tab == 0 ? white : transparent;
+                    Text { 
+                        text: "Установка"; 
+                        font-weight: active_tab == 0 ? 700 : 500;
+                        color: active_tab == 0 ? #2563eb : #64748b;
+                        horizontal-alignment: center;
+                        vertical-alignment: center;
+                    }
+                    TouchArea { 
+                        clicked => { active_tab = 0; } 
+                    }
+                }
+                
+                Rectangle {
+                    width: 160px;
+                    background: active_tab == 1 ? white : transparent;
+                    Text { 
+                        text: "Установленные"; 
+                        font-weight: active_tab == 1 ? 700 : 500;
+                        color: active_tab == 1 ? #2563eb : #64748b;
+                        horizontal-alignment: center;
+                        vertical-alignment: center;
+                    }
+                    TouchArea { 
+                        clicked => { 
+                            active_tab = 1; 
+                            AppLogic.load_installed_packages();
+                        } 
+                    }
+                }
+            }
+        }
+        
+        Rectangle {
+            vertical-stretch: 1;
+            
+            if active_tab == 0 : InstallView {}
+            if active_tab == 1 : InstalledView {}
+        }
+    }
+}

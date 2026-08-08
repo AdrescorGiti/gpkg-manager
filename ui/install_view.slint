@@ -1,0 +1,89 @@
+import { ListView, ScrollView } from "std-widgets.slint";
+import { AppLogic } from "logic.slint";
+import { PrimaryButton } from "components/button.slint";
+
+export component InstallView inherits VerticalLayout {
+    spacing: 16px;
+    padding: 16px;
+
+    Rectangle {
+        preferred-height: 100px;
+        vertical-stretch: 0;
+        background: #f1f5f9;
+        border-color: #cbd5e1;
+        border-width: 2px;
+        border-radius: 8px;
+        
+        VerticalLayout {
+            alignment: center;
+            Text {
+                text: AppLogic.selected_file == "" ? "Нажмите сюда, чтобы выбрать пакет .gpkg" : AppLogic.selected_file;
+                horizontal-alignment: center;
+                color: #475569;
+                font-weight: 600;
+                wrap: word-wrap;
+            }
+        }
+        
+        TouchArea {
+            clicked => { AppLogic.open_file_dialog(); }
+        }
+    }
+
+    if AppLogic.selected_file != "" : VerticalLayout {
+        spacing: 12px;
+        vertical-stretch: 1;
+        
+        HorizontalLayout {
+            spacing: 8px;
+            vertical-stretch: 0;
+            Text { text: AppLogic.pkg_name; font-size: 18px; font-weight: 700; color: #0f172a; }
+            if AppLogic.pkg_version != "" : Text { text: "v" + AppLogic.pkg_version; font-size: 16px; color: #2563eb; font-weight: 600; }
+        }
+        
+        Text { text: AppLogic.pkg_description; color: #475569; wrap: word-wrap; vertical-stretch: 0; }
+        
+        if AppLogic.archive_files.length > 0 : VerticalLayout {
+            vertical-stretch: 0;
+            Text { text: "Файлы в пакете:"; font-weight: 600; font-size: 12px; color: #64748b; }
+            
+            Rectangle {
+                preferred-height: 110px;
+                ListView {
+                    for file in AppLogic.archive_files : Text {
+                        text: "📦 " + file;
+                        color: #475569;
+                        font-size: 12px;
+                    }
+                }
+            }
+        }
+
+        PrimaryButton {
+            text: AppLogic.is_processing ? "Установка..." : "Установить пакет";
+            enabled: !AppLogic.is_processing;
+            clicked => { AppLogic.install_package(AppLogic.selected_file); }
+            vertical-stretch: 0;
+        }
+
+        // Блок терминала теперь тянется вниз на всё доступное место окна!
+        if AppLogic.terminal_output != "" : Rectangle {
+            background: #1e293b;
+            border-radius: 6px;
+            min-height: 100px;
+            vertical-stretch: 1;
+            
+            ScrollView {
+                VerticalLayout {
+                    padding: 12px;
+                    Text { 
+                        text: AppLogic.terminal_output; 
+                        color: #10b981; 
+                        font-family: "monospace"; 
+                        wrap: word-wrap; 
+                    }
+                }
+            }
+        }
+    }
+}

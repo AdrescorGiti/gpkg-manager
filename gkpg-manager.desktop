@@ -1,0 +1,8 @@
+[Desktop Entry]
+Name=G OS Package Manager
+Comment=Графический менеджер пакетов gpkg
+Exec=/home/giti/Документы/gpkg_manager/target/release/gpkg-manager
+Icon=/home/giti/Документы/gpkg_manager/ui/assets/logo.png
+Terminal=false
+Type=Application
+Categories=System;Settings;

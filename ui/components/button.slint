@@ -1,0 +1,18 @@
+export component PrimaryButton inherits Rectangle {
+    in property <string> text;
+    in property <bool> enabled: true;
+    callback clicked <=> touch.clicked;
+    
+    background: !root.enabled ? #64748b : (touch.pressed ? #1e3a8a : #2563eb);
+    border-radius: 6px;
+    height: 36px;
+    
+    Text { 
+        text: root.text; 
+        color: white; 
+        font-weight: 600;
+        vertical-alignment: center; 
+        horizontal-alignment: center; 
+    }
+    touch := TouchArea {}
+}
